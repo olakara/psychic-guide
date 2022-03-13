@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { DepartmentModule } from './department/department.module';
+import { DbContextModule } from './db-context/db-context.module';
 
 @Module({
-  imports: [AuthModule, DepartmentModule],
+  imports: [AuthModule, DepartmentModule, DbContextModule],
   controllers: [AppController],
   providers: [AppService],
 })
