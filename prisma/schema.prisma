@@ -14,11 +14,14 @@ model User {
   id String @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  email String
+  email String @unique
   hash String
 
   firstName String?
   lastName String?
+
+  departmentId String
+  department Department @relation(fields: [departmentId], references: [id])
 }
 
 model Department {
@@ -28,4 +31,6 @@ model Department {
 
   name String
   location String?
+
+  bookmarks User[]
 }
