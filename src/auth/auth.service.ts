@@ -32,7 +32,28 @@ export class AuthService {
     }
   }
 
-  public signIn() {
-    return { msg: 'I have signed in!' };
+  public async signIn(dto: AuthDto) {
+    //find user by email
+    const user = await this.dbContext.user.findUnique({
+      where: { email: dto.email },
+      include: {
+        department: true,
+      },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('Wrong credentials!');
+    }
+
+    //check password
+    const isValidPassword = await argon.verify(user.hash, dto.password);
+
+    if (!isValidPassword) {
+      throw new ForbiddenException('Wrong credential!');
+    }
+
+    //send back the user
+    delete user.hash;
+    return user;
   }
 }
