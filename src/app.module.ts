@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { DepartmentModule } from './department/department.module';
 import { DbContextModule } from './db-context/db-context.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DbContextModule } from './db-context/db-context.module';
     AuthModule,
     DepartmentModule,
     DbContextModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

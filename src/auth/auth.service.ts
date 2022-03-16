@@ -3,9 +3,15 @@ import { DbContextService } from 'src/db-context/db-context.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
-  constructor(private dbContext: DbContextService) {}
+  constructor(
+    private dbContext: DbContextService,
+    private jwt: JwtService,
+    private config: ConfigService,
+  ) {}
 
   public async signUp(dto: AuthDto) {
     // generate hash
@@ -52,8 +58,24 @@ export class AuthService {
       throw new ForbiddenException('Wrong credential!');
     }
 
-    //send back the user
-    delete user.hash;
-    return user;
+    //send back the user with JWT
+    const data = {
+      email: user.email,
+      name: user.firstName,
+      access_token: await this.signToken(user.id, user.email),
+    };
+    return data;
+  }
+
+  async signToken(userId: string, email: string): Promise<string> {
+    const data = {
+      sub: userId,
+      email,
+    };
+
+    return this.jwt.signAsync(data, {
+      expiresIn: '5m',
+      secret: this.config.get('SECRET'),
+    });
   }
 }
