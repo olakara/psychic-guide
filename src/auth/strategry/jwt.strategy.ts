@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    let user = await this.dbContext.user.findUnique({
+    const user = await this.dbContext.user.findUnique({
       where: { id: payload.sub },
     });
     delete user.hash;
